@@ -1,2 +1,2 @@
-# sgstudio.github.io
-fuck
+# SG Studio website
+nothing i think
