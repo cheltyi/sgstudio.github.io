@@ -25,6 +25,16 @@
             --primary-color: #333;
             --text-color: #666;
             --background-color: #fff;
+            --card-background: #f5f5f5;
+            --border-color: #333;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #fff;
+            --text-color: #ccc;
+            --background-color: #1a1a1a;
+            --card-background: #2d2d2d;
+            --border-color: #fff;
         }
 
         body {
@@ -33,6 +43,36 @@
             padding: 0;
             line-height: 1.6;
             color: var(--text-color);
+            background-color: var(--background-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Theme Switcher */
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-switch-label {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 20px;
+            background: var(--card-background);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .theme-icon {
+            font-size: 20px;
         }
 
         .container {
@@ -70,6 +110,7 @@
             max-width: 600px;
             margin: 20px auto;
             text-align: center;
+            color: var(--text-color);
         }
 
         .products {
@@ -91,8 +132,9 @@
         .products-item {
             margin-bottom: 15px;
             padding: 15px;
-            background: #f5f5f5;
+            background: var(--card-background);
             border-radius: 8px;
+            color: var(--text-color);
         }
 
         .buttons {
@@ -120,13 +162,13 @@
         }
 
         .button-wiki {
-            background: white;
+            background: var(--background-color);
             color: var(--primary-color);
-            border: 2px solid var(--primary-color);
+            border: 2px solid var(--border-color);
         }
 
         .button-wiki:hover {
-            background: #f5f5f5;
+            background: var(--card-background);
         }
 
         .button-boosty {
@@ -138,6 +180,7 @@
             text-align: center;
             font-style: italic;
             margin: 20px 0;
+            color: var(--text-color);
         }
 
         @media (max-width: 768px) {
@@ -157,6 +200,13 @@
     </style>
 </head>
 <body>
+    <div class="theme-switch">
+        <label class="theme-switch-label">
+            <input type="checkbox" id="theme-toggle">
+            <span class="theme-icon">🌞</span>
+        </label>
+    </div>
+
     <header class="header">
         <div class="container">
             <div class="logo-wrap">
@@ -181,7 +231,7 @@
 
         <div class="buttons">
             <a href="https://discord.gg/U2TQwaxkXW" class="button button-discord" target="_blank" rel="noopener">Discord</a>
-            <a href="https://afgan14.ru/wiki" class="button button-wiki" target="_blank" rel="noopener">Wiki</a>
+            <a href="http://afgan14.ru/wiki" class="button button-wiki" target="_blank" rel="noopener">Wiki</a>
             <a href="https://boosty.to/skibidistation" class="button button-boosty" target="_blank" rel="noopener">Boosty</a>
         </div>
     </main>
@@ -189,5 +239,40 @@
     <footer>
         <p class="footer-text">Санрайзы, корваксы, МК, сосите яйца.</p>
     </footer>
+
+    <script>
+        // Проверяем предпочтения пользователя
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.nextElementSibling;
+
+        // Функция установки темы
+        function setTheme(isDark) {
+            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeIcon.textContent = isDark ? '🌙' : '🌞';
+            themeToggle.checked = isDark;
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Проверяем сохраненную тему
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme === 'dark');
+        } else {
+            setTheme(prefersDarkScheme.matches);
+        }
+
+        // Обработчик переключения темы
+        themeToggle.addEventListener('change', (e) => {
+            setTheme(e.target.checked);
+        });
+
+        // Слушаем изменения системной темы
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches);
+            }
+        });
+    </script>
 </body>
 </html>
